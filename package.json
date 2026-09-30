@@ -1,0 +1,63 @@
+{
+  "name": "erp-backend",
+  "packageManager": "yarn@4.14.1",
+  "private": true,
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build": "prisma generate && tsc -p tsconfig.json",
+    "start": "node dist/main.js",
+    "start:prod": "prisma migrate deploy && node dist/cli/seed.js && node dist/main.js",
+    "dev": "nest start --watch",
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "db:local": "tsx scripts/local-db.ts",
+    "db:migrate": "prisma migrate dev",
+    "db:deploy": "prisma migrate deploy",
+    "db:seed": "tsx src/cli/seed.ts",
+    "db:studio": "prisma studio",
+    "openapi:export": "tsc -p tsconfig.json && node dist/cli/export-openapi.js openapi.json",
+    "test": "vitest run src/",
+    "test:e2e": "vitest run test/",
+    "test:watch": "vitest"
+  },
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.1143.0",
+    "@aws-sdk/s3-request-presigner": "^3.1143.0",
+    "@fastify/cors": "^11.3.0",
+    "@fastify/multipart": "^10.1.2",
+    "@fastify/static": "^10.1.5",
+    "@nestjs/common": "^11",
+    "@nestjs/core": "^11",
+    "@nestjs/jwt": "^11",
+    "@nestjs/platform-fastify": "^11",
+    "@nestjs/swagger": "^11",
+    "@nestjs/throttler": "^6",
+    "@prisma/client": "^6",
+    "bcryptjs": "^3.0.3",
+    "decimal.js": "^10.6.0",
+    "dotenv": "^18.0.4",
+    "exceljs": "^4.4.0",
+    "fastify": "5.11.3",
+    "nestjs-zod": "^5.5.0",
+    "pdfmake": "^0.2",
+    "prisma": "^6",
+    "reflect-metadata": "^0.2.2",
+    "rxjs": "^7.8.2",
+    "zod": "^4"
+  },
+  "devDependencies": {
+    "@nestjs/cli": "^11",
+    "@nestjs/testing": "^11",
+    "@swc/core": "^1.16.13",
+    "@types/bcryptjs": "^3.0.0",
+    "@types/node": "^22",
+    "@types/pdfmake": "^0.3.3",
+    "embedded-postgres": "^18.4.0-beta.17",
+    "tsx": "^4.23.15",
+    "typescript": "^5.8",
+    "unplugin-swc": "^2.0.0",
+    "vite": "^8.3.1",
+    "vitest": "^5.0.3"
+  }
+}

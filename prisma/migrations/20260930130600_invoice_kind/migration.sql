@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "Invoice" ADD COLUMN     "kind" TEXT NOT NULL DEFAULT 'MILESTONE';
