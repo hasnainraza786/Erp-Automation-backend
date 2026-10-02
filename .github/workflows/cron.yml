@@ -1,5 +1,9 @@
 # Free hosts sleep when idle, so an external cron wakes the API hourly to run
-# notifications, quotation expiry, cleanup and the nightly backup.
+# notifications, quotation expiry, cleanup and the nightly JSON snapshot backup.
+#
+# Repo secrets:
+#   API_URL      public origin, e.g. https://erp-api.onrender.com
+#   CRON_SECRET  same value as the Render CRON_SECRET env var
 name: Scheduled jobs
 
 on:
@@ -16,4 +20,11 @@ jobs:
           API_URL: ${{ secrets.API_URL }}
           CRON_SECRET: ${{ secrets.CRON_SECRET }}
         run: |
-          curl -sf --retry 5 --retry-delay 20 --max-time 120 -X POST "$API_URL/api/v1/system/jobs" -H "X-Cron-Secret: $CRON_SECRET"
+          set -eu
+          if [ -z "${API_URL:-}" ] || [ -z "${CRON_SECRET:-}" ]; then
+            echo "Set repository secrets API_URL and CRON_SECRET (see DEPLOY.md)."
+            exit 1
+          fi
+          curl -sf --retry 8 --retry-delay 20 --retry-all-errors --max-time 180 \
+            -X POST "$API_URL/api/v1/system/jobs" \
+            -H "X-Cron-Secret: $CRON_SECRET"

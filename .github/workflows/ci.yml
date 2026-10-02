@@ -2,7 +2,7 @@ name: CI
 
 on:
   push:
-    branches: [main]
+    branches: [main, master]
   pull_request:
 
 jobs:
@@ -20,6 +20,7 @@ jobs:
           --health-cmd "pg_isready -U erp" --health-interval 5s --health-timeout 5s --health-retries 10
     env:
       DATABASE_URL: postgresql://erp:erp@localhost:5432/erp?schema=public
+      DIRECT_URL: postgresql://erp:erp@localhost:5432/erp?schema=public
       JWT_ACCESS_SECRET: ci-access-secret-ci-access-secret-0000
       JWT_REFRESH_SECRET: ci-refresh-secret-ci-refresh-secret-000
       SEED_ADMIN_EMAIL: admin@erp.local
@@ -50,3 +51,10 @@ jobs:
           path: openapi.json
       - if: failure()
         run: cat api.log
+
+  image:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build Docker image
+        run: docker build -t erp-api:ci .

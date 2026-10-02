@@ -54,9 +54,11 @@ balances and aging are all derived from these journals. Corrections reverse the 
 
 ## Deployment (free tier)
 
+Full runbook: **[DEPLOY.md](./DEPLOY.md)**.
+
 - **API**: Render free web service using `render.yaml` (Docker). On start it runs `prisma migrate deploy` and the base seed.
-- **Database**: Neon Postgres. Use the pooled connection string with `sslmode=require`.
-- **Files and backups**: Cloudflare R2 (`STORAGE_DRIVER=s3`).
+- **Database**: Neon Postgres. Pooled `DATABASE_URL` (`pgbouncer=true`) plus unpooled `DIRECT_URL` for migrations.
+- **Files and backups**: Cloudflare R2 (`STORAGE_DRIVER=s3`). Nightly gzip JSON snapshots via `/api/v1/system/jobs`.
 - **Scheduled jobs**: `.github/workflows/cron.yml` calls `POST /api/v1/system/jobs` every hour with `X-Cron-Secret`.
   Set the repo secrets `API_URL` and `CRON_SECRET`. The free instance sleeps when idle, and each call also wakes it.
-- **CI**: `.github/workflows/ci.yml` builds, runs the unit and e2e tests against Postgres, and publishes `openapi.json`.
+- **CI**: `.github/workflows/ci.yml` builds, runs the unit and e2e tests against Postgres, publishes `openapi.json`, and builds the Docker image.

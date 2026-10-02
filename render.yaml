@@ -1,4 +1,5 @@
 # Render Blueprint (free web service). Database: Neon Postgres. Files: Cloudflare R2.
+# Apply from the Render dashboard: New → Blueprint → this repo.
 services:
   - type: web
     name: erp-api
@@ -12,11 +13,13 @@ services:
       - key: NODE_ENV
         value: production
       - key: DATABASE_URL
-        sync: false # Neon pooled connection string, append ?sslmode=require&connection_limit=5
+        sync: false # Neon pooled URI + ?sslmode=require&pgbouncer=true&connection_limit=5
+      - key: DIRECT_URL
+        sync: false # Neon unpooled (direct) URI + ?sslmode=require — required for prisma migrate
       - key: CORS_ORIGINS
         sync: false # e.g. https://erp-web.pages.dev,https://erp.yourcompany.com
       - key: PUBLIC_API_URL
-        sync: false
+        sync: false # public origin of this API, e.g. https://erp-api.onrender.com
       - key: JWT_ACCESS_SECRET
         generateValue: true
       - key: JWT_REFRESH_SECRET
@@ -45,3 +48,5 @@ services:
         generateValue: true
       - key: SCHEDULER_ENABLED
         value: "true"
+      - key: BACKUP_RETENTION
+        value: "14"
